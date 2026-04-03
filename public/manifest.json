@@ -1,0 +1,17 @@
+{
+  "name": "Slide Puzzle",
+  "short_name": "Slide",
+  "description": "4x4 sliding tile puzzle",
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#0e0e0e",
+  "theme_color": "#fbbf24",
+  "icons": [
+    {
+      "src": "/icons.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
