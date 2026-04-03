@@ -40,7 +40,7 @@ function InstallBanner() {
   };
 
   const mono = "'Share Tech Mono', monospace";
-  const banner = { 
+  const banner = {
     position: "fixed", top: 0, left: 0, right: 0, zIndex: 999,
     background: "#1a1a1a", borderBottom: "1px solid #fbbf24",
     padding: "10px 16px", display: "flex", alignItems: "center",
@@ -202,6 +202,7 @@ export default function App() {
       padding: 20,
       userSelect: "none",
     }}>
+      <InstallBanner />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -318,25 +319,24 @@ export default function App() {
                     background: won
                       ? "linear-gradient(135deg, #92400e, #fbbf24)"
                       : isCorrect
-                      ? "linear-gradient(135deg, #1a2e1a, #14532d)"
-                      : isMovable
-                      ? "linear-gradient(135deg, #1c1c2e, #2d2d4e)"
-                      : "linear-gradient(135deg, #1a1a1a, #242424)",
+                        ? "linear-gradient(135deg, #1a2e1a, #14532d)"
+                        : isMovable
+                          ? "linear-gradient(135deg, #1c1c2e, #2d2d4e)"
+                          : "linear-gradient(135deg, #1a1a1a, #242424)",
                     border: won
                       ? "1px solid #fbbf24"
                       : isCorrect
-                      ? "1px solid #16a34a"
-                      : isMovable
-                      ? "1px solid #4f46e5"
-                      : "1px solid #2a2a2a",
+                        ? "1px solid #16a34a"
+                        : isMovable
+                          ? "1px solid #4f46e5"
+                          : "1px solid #2a2a2a",
                     boxShadow: won
                       ? "0 4px 20px rgba(251,191,36,0.3)"
                       : isMovable
-                      ? "0 4px 16px rgba(79,70,229,0.25)"
-                      : "0 2px 8px rgba(0,0,0,0.4)",
+                        ? "0 4px 16px rgba(79,70,229,0.25)"
+                        : "0 2px 8px rgba(0,0,0,0.4)",
                   }}
                 >
-                  <InstallBanner />
                   <span style={{
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: TILE_SIZE * 0.42,
