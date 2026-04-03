@@ -1,5 +1,89 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 
+function InstallBanner() {
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showAndroid, setShowAndroid] = useState(false);
+  const [showIOS, setShowIOS] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    // Don't show if already installed
+    if (window.matchMedia("(display-mode: fullscreen)").matches) return;
+    if (localStorage.getItem("pwa-dismissed")) return;
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+    if (isIOS) { setShowIOS(true); return; }
+
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowAndroid(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const dismiss = () => {
+    setShowAndroid(false);
+    setShowIOS(false);
+    setDismissed(true);
+    localStorage.setItem("pwa-dismissed", "1");
+  };
+
+  const install = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    setShowAndroid(false);
+    setDeferredPrompt(null);
+    if (outcome === "accepted") localStorage.setItem("pwa-dismissed", "1");
+  };
+
+  const mono = "'Share Tech Mono', monospace";
+  const banner = { 
+    position: "fixed", top: 0, left: 0, right: 0, zIndex: 999,
+    background: "#1a1a1a", borderBottom: "1px solid #fbbf24",
+    padding: "10px 16px", display: "flex", alignItems: "center",
+    justifyContent: "space-between", gap: 12,
+  };
+
+  if (showAndroid) return (
+    <div style={banner}>
+      <span style={{ fontFamily: mono, fontSize: 12, color: "#fbbf24" }}>
+        📲 Install SLIDE as an app
+      </span>
+      <div style={{ display: "flex", gap: 8 }}>
+        <button onClick={install} style={{
+          padding: "6px 16px", background: "#fbbf24", border: "none",
+          borderRadius: 4, fontFamily: mono, fontSize: 11, cursor: "pointer",
+          color: "#0e0e0e", fontWeight: 700, letterSpacing: "0.1em"
+        }}>INSTALL</button>
+        <button onClick={dismiss} style={{
+          padding: "6px 10px", background: "transparent", border: "1px solid #333",
+          borderRadius: 4, fontFamily: mono, fontSize: 11, cursor: "pointer", color: "#555"
+        }}>✕</button>
+      </div>
+    </div>
+  );
+
+  if (showIOS) return (
+    <div style={{ ...banner, flexDirection: "column", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+        <span style={{ fontFamily: mono, fontSize: 12, color: "#fbbf24" }}>📲 Install SLIDE as an app</span>
+        <button onClick={dismiss} style={{
+          padding: "4px 8px", background: "transparent", border: "1px solid #333",
+          borderRadius: 4, fontFamily: mono, fontSize: 11, cursor: "pointer", color: "#555"
+        }}>✕</button>
+      </div>
+      <span style={{ fontFamily: mono, fontSize: 11, color: "#888", marginTop: 4 }}>
+        Tap the Share button ↑ then "Add to Home Screen"
+      </span>
+    </div>
+  );
+
+  return null;
+}
+
 const SIZE = 4;
 const TOTAL = SIZE * SIZE;
 const GOAL = [...Array(TOTAL - 1).keys()].map(i => i + 1).concat(0);
@@ -252,6 +336,7 @@ export default function App() {
                       : "0 2px 8px rgba(0,0,0,0.4)",
                   }}
                 >
+                  <InstallBanner />
                   <span style={{
                     fontFamily: "'Bebas Neue', sans-serif",
                     fontSize: TILE_SIZE * 0.42,
